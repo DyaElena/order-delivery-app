@@ -17,17 +17,25 @@ const Cart = (props) => {
     </ul>
   );
 
+  const orderHandler = () => {
+    console.log('Prepearing...');
+  };
+
   // const cartPrices = cartItems.filter((item) => item.price + totalPrice);
   return (
-    <Modal>
+    <Modal onClose={props.onClose}>
       <div>{cartItems}</div>
       <div className={classes.total}>
         <span>Total Amount</span>
         <span>36.55</span>
       </div>
       <div className={classes.actions}>
-        <button className={classes['button--alt']}>Close</button>
-        <button className={classes.button}>Order</button>
+        <button className={classes['button--alt']} onClick={props.onClose}>
+          Close
+        </button>
+        <button className={classes.button} onClick={orderHandler}>
+          Order
+        </button>
       </div>
     </Modal>
   );
