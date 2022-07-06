@@ -1,41 +1,55 @@
 import classes from './Cart.module.css';
 import Modal from '../UI/Modal/Modal';
+import CartItem from './CartItem';
+
+import { useContext } from 'react';
+import CartContext from '../../store/cart-context';
 
 const Cart = (props) => {
-  const cartItems = (
-    <ul className={classes['cart-items']}>
-      {[
-        {
-          id: 'm1',
-          name: 'Sushi',
-          description: 'Finest fish and veggies',
-          price: 22.99,
-        },
-      ].map((item) => (
-        <li>{item.name}</li>
-      ))}
-    </ul>
-  );
+  const cartCtx = useContext(CartContext);
 
-  const orderHandler = () => {
-    console.log('Prepearing...');
+  const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
+  const hasItems = cartCtx.items.length > 0;
+
+  const cartItemRemoveHandler = (id) => {
+    cartCtx.removeItem(id);
   };
 
-  // const cartPrices = cartItems.filter((item) => item.price + totalPrice);
+  const cartItemAddHandler = (item) => {
+    cartCtx.addItem({ ...item, amount: 1 });
+  };
+
+  const orderHandler = () => {
+    console.log('Preparing...');
+  };
+
   return (
     <Modal onClose={props.onClose}>
-      <div>{cartItems}</div>
+      <ul className={classes['cart-items']}>
+        {cartCtx.items.map((item) => (
+          <CartItem
+            key={item.id}
+            name={item.name}
+            amount={item.amount}
+            price={item.price}
+            onRemove={() => cartItemRemoveHandler(item.id)}
+            onAdd={() => cartItemAddHandler(item)}
+          />
+        ))}
+      </ul>
       <div className={classes.total}>
         <span>Total Amount</span>
-        <span>36.55</span>
+        <span>{totalAmount}</span>
       </div>
       <div className={classes.actions}>
         <button className={classes['button--alt']} onClick={props.onClose}>
           Close
         </button>
-        <button className={classes.button} onClick={orderHandler}>
-          Order
-        </button>
+        {hasItems && (
+          <button className={classes.button} onClick={orderHandler}>
+            Order
+          </button>
+        )}
       </div>
     </Modal>
   );
